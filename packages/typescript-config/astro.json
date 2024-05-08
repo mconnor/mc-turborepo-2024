@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+      "verbatimModuleSyntax": true,
+      "experimentalDecorators": true,
+      "declaration": true,
+      "useDefineForClassFields": false,
+      "strictNullChecks": true
+    }
+  }
+  

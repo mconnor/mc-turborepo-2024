@@ -1,0 +1,31 @@
+---
+import Link from '@components/Link.astro';
+
+type SocialType = 'twitter' | 'instagram' | 'github' | 'linkedin' | 'youtube';
+
+interface Props {
+  username?: string;
+  platform: SocialType;
+}
+const { platform, username = 'mconnor' } = Astro.props;
+
+const myicon = (platform: SocialType) => {
+  switch (platform) {
+    case 'twitter':
+      return 'fa-twitter';
+    case 'instagram':
+      return 'fa-instagram';
+    case 'github':
+      return 'fa-github';
+    case 'linkedin':
+      return 'fa-linkedin';
+    default:
+      return 'fa-twitter';
+  }
+};
+---
+
+<Link href={`https://www.${platform}.com/${username}`}>
+  <i class:list={['fa-brands', myicon(platform)]}></i>
+  {platform}
+</Link>

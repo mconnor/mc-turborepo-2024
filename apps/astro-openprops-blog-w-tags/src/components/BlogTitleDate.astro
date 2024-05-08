@@ -1,0 +1,81 @@
+---
+import { format } from 'date-fns';
+import type { CollectionEntry } from 'astro:content';
+import { getEntry } from 'astro:content';
+import { Switcher, Stack, Box, Frame } from '@cc/index.js';
+
+import Card from '@components/Card.astro';
+import { Image } from 'astro:assets';
+// import { clearCachedFetchImplementation } from '@sentry/browser/types/transports/utils';
+
+type PostType = CollectionEntry<'blog'>;
+
+interface Props {
+  posts: PostType[];
+}
+
+const { posts } = Astro.props;
+
+const getDecoratedPosts = async (_posts: CollectionEntry<'blog'>[]) => {
+  const formattedPosts = await Promise.all(
+    _posts.map(async (p) => {
+      const { data, slug } = p;
+      const { author, title, pubDate, cover, description } = data;
+      const { id } = author;
+
+      const authorObj = await getEntry('authors', id);
+      const { name } = authorObj.data;
+
+      return {
+        title,
+        authName: name,
+        pubDate,
+        slug,
+        cover,
+        desc: description,
+      };
+    }),
+  );
+  return formattedPosts;
+};
+
+const decoratedPosts = await getDecoratedPosts(posts);
+
+// {format(post.data.pubDate, 'MMM do, yyyy')}
+---
+
+<Stack space="var(--size-6)" recursive>
+  {
+    decoratedPosts.map(({ pubDate, slug, title, desc, cover }) => (
+      <Card href={'/posts/' + slug}>
+        <Box slot="top">{format(pubDate, 'MMM do, yyyy')}</Box>
+
+        <Frame ratio="4:3" slot="middle">
+          <Image src={cover.url} alt={cover.alt} width="1500" height="643" />
+        </Frame>
+
+        <Switcher slot="bottom" threshold="var(--size-fluid-10)">
+          <h2 class="title">{title}</h2>
+
+          <p class="truncate">{desc}</p>
+        </Switcher>
+      </Card>
+    ))
+  }
+</Stack>
+
+<style>
+  p {
+    font-size: var(--font-size-1);
+    font-weight: var(--font-weight-2);
+  }
+  .truncate {
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .title {
+    flex-grow: 1;
+  }
+</style>

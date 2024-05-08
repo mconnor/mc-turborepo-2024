@@ -1,0 +1,42 @@
+{
+  "extends": "@repo/typescript-config/astro",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@cc/*": [
+        "src/astro-custom-layout-components/*"
+      ],
+      "@layouts/*": [
+        "src/layouts/*"
+      ],
+      "@content/*": [
+        "src/content/*"
+      ],
+      "@assets/*": [
+        "src/assets/*"
+      ],
+      "@styles/*": [
+        "src/styles/*"
+      ],
+      "@scripts/*": [
+        "src/scripts/*"
+      ],
+      "@wc/*": [
+        "src/web-components/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.d.ts",
+    "**/*.mjs",
+    "**/*.ts",
+    "**/*.js",
+    "src/**/*.astro"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

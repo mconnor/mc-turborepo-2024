@@ -1,0 +1,50 @@
+---
+import TitleDate from '@components/BlogTitleDate.astro';
+
+import Layout from '@layouts/BaseLayout.astro';
+
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+// import type { CollectionEntry } from 'astro:content'
+
+// A getStaticPaths function should always return a list of objects containing params
+// (what to call each page route) and optionally any props (data that you want to pass to those pages).
+//  Earlier, you defined each tag name that you knew was used in your blog and passed the entire list
+//  of posts as props to each page.
+export const prerender = true;
+
+interface Props {
+  filteredPosts: CollectionEntry<'blog'>[];
+}
+
+export const getStaticPaths = async () => {
+  const allPosts = await getCollection('blog');
+  const uniqueTags = [
+    ...new Set(
+      allPosts
+        .map((__post: CollectionEntry<'blog'>) => __post.data.tags)
+        .flat(),
+    ),
+  ];
+
+  return uniqueTags.map((uTag) => {
+    const filteredPosts = allPosts.filter(
+      (_post: CollectionEntry<'blog'>) =>
+        _post.data.draft !== true && _post.data.tags.includes(uTag),
+    );
+    return {
+      params: { tag: uTag },
+      props: {
+        filteredPosts,
+      },
+    };
+  });
+};
+
+const { tag } = Astro.params;
+const { filteredPosts } = Astro.props;
+---
+
+<Layout pageTitle={tag}>
+  <TitleDate posts={filteredPosts} />
+</Layout>
